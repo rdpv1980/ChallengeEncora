@@ -1,5 +1,6 @@
 package com.examen.entrevista.scotiabank.controller;
 
+import com.examen.entrevista.scotiabank.Util;
 import com.examen.entrevista.scotiabank.model.Alumno;
 import com.examen.entrevista.scotiabank.service.AlumnoService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +29,9 @@ public class AlumnoController {
 
     @PostMapping("/crear")
     public Mono<ResponseEntity<String>> crearAlumno(@RequestBody @Valid Alumno alumno) {
-       // return alumnoService.crearAlumno(alumno);
-      if(alumno.getId()==null || alumno.getId().isBlank()){
-            return Mono.just(ResponseEntity.badRequest().body("El id del alumno no debe ser nulo o vacio"));
-        }
 
-       if(alumno.getNombre()==null || alumno.getNombre().isBlank()){
-            return Mono.just(ResponseEntity.badRequest().body("El nombre del alumno no debe ser nulo o vacio"));
-        }
-
-        if(alumno.getApellido()==null || alumno.getApellido().isBlank()){
-            return Mono.just(ResponseEntity.badRequest().body("El apellido del alumno no debe ser nulo o vacio"));
-        }
-
-        if(alumno.getEstado()==null || alumno.getEstado().isBlank()){
-            return Mono.just(ResponseEntity.badRequest().body("El estado del alumno no debe ser nulo o vacio"));
-        }
-        if(alumno.getEdad()==null || alumno.getEdad()<=0){
-            return Mono.just(ResponseEntity.badRequest().body("La edad del alumno no debe ser nulo o debe ser mayor a cero"));
+        if(Util.validarAlumno(alumno)!=null){
+            return Mono.just(ResponseEntity.badRequest().body(Util.validarAlumno(alumno)));
         }
 
         return alumnoService.crearAlumno(alumno)

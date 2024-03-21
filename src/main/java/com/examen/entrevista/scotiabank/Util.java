@@ -7,15 +7,22 @@ import reactor.core.publisher.Mono;
 
 public class Util {
 
-    public Mono<ResponseEntity<String>> validarAlumno(@RequestBody Alumno alumno) {
-        // return alumnoService.crearAlumno(alumno);
+    public static String validarAlumno(Alumno alumno) {
         if (alumno.getId() == null || alumno.getId().isBlank()) {
-            return Mono.just(ResponseEntity.badRequest().body("El id del alumno no debe ser nulo o vacio"));
+            return "El id del alumno no debe ser nulo o vacío";
         }
-
         if (alumno.getNombre() == null || alumno.getNombre().isBlank()) {
-            return Mono.just(ResponseEntity.badRequest().body("El nombre del alumno no debe ser nulo o vacio"));
+            return "El nombre del alumno no debe ser nulo o vacío";
         }
-        return Mono.just(ResponseEntity.ok().body("datos correctos"));
+        if (alumno.getApellido() == null || alumno.getApellido().isBlank()) {
+            return "El apellido del alumno no debe ser nulo o vacío";
+        }
+        if (alumno.getEstado() == null || alumno.getEstado().isBlank()) {
+            return "El estado del alumno no debe ser nulo o vacío";
+        }
+        if (alumno.getEdad() == null || alumno.getEdad() <= 0) {
+            return "La edad del alumno no debe ser nula o debe ser mayor a cero";
+        }
+        return null; // Significa que la validación fue exitosa
     }
 }

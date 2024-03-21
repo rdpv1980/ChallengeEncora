@@ -1,7 +1,7 @@
 package com.examen.entrevista.scotiabank.service;
 
 import com.examen.entrevista.scotiabank.model.Alumno;
-import com.examen.entrevista.scotiabank.repository.AlumnoRepository;
+import com.examen.entrevista.scotiabank.repository.AlumnoRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class AlumnoServiceTest {
     @Mock
-    private AlumnoRepository alumnoRepository;
+    private AlumnoRepositoryImpl alumnoRepositoryImpl;
 
     @InjectMocks
     private AlumnoServiceImpl alumnoService;
@@ -26,8 +26,8 @@ public class AlumnoServiceTest {
     @Test
     void crearAlumno() {
         Alumno alumno = new Alumno("1", "John", "Doe", "activo", 25);
-        when(alumnoRepository.existeId(1)).thenReturn(Mono.just(false));
-        when(alumnoRepository.guardar(alumno)).thenReturn(Mono.empty());
+        when(alumnoRepositoryImpl.existeId(1)).thenReturn(Mono.just(false));
+        when(alumnoRepositoryImpl.guardar(alumno)).thenReturn(Mono.empty());
 
         Mono<ResponseEntity<Void>> result = alumnoService.crearAlumno(alumno);
 
@@ -35,8 +35,8 @@ public class AlumnoServiceTest {
                 .expectNextMatches(response -> response.getStatusCode() == HttpStatus.CREATED)
                 .verifyComplete();
 
-        verify(alumnoRepository, times(1)).existeId(1);
-        verify(alumnoRepository, times(1)).guardar(alumno);
+        verify(alumnoRepositoryImpl, times(1)).existeId(1);
+        verify(alumnoRepositoryImpl, times(1)).guardar(alumno);
     }
 
 
@@ -44,7 +44,7 @@ public class AlumnoServiceTest {
     void obtenerAlumnosActivos() {
         Alumno alumno1 = new Alumno("1", "John", "Doe", "activo", 25);
         Alumno alumno2 = new Alumno("2", "Jane", "Smith", "activo", 28);
-        when(alumnoRepository.obtenerAlumnosActivos()).thenReturn(Flux.just(alumno1, alumno2));
+        when(alumnoRepositoryImpl.obtenerAlumnosActivos()).thenReturn(Flux.just(alumno1, alumno2));
 
         Flux<Alumno> result = alumnoService.obtenerAlumnosActivos();
 
@@ -53,13 +53,13 @@ public class AlumnoServiceTest {
                 .expectNext(alumno2)
                 .verifyComplete();
 
-        verify(alumnoRepository, times(1)).obtenerAlumnosActivos();
+        verify(alumnoRepositoryImpl, times(1)).obtenerAlumnosActivos();
     }
 
     @Test
     void crearAlumnoDuplicateIdError() {
         Alumno alumno = new Alumno("1", "John", "Doe", "activo", 25);
-        when(alumnoRepository.existeId(1)).thenReturn(Mono.just(true));
+        when(alumnoRepositoryImpl.existeId(1)).thenReturn(Mono.just(true));
 
         Mono<ResponseEntity<Void>> result = alumnoService.crearAlumno(alumno);
 
@@ -67,7 +67,7 @@ public class AlumnoServiceTest {
                 .expectError(RuntimeException.class)
                 .verify();
 
-        verify(alumnoRepository, times(1)).existeId(1);
-        verify(alumnoRepository, never()).guardar(alumno);
+        verify(alumnoRepositoryImpl, times(1)).existeId(1);
+        verify(alumnoRepositoryImpl, never()).guardar(alumno);
     }
 }
