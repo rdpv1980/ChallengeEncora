@@ -1,21 +1,13 @@
 package com.examen.entrevista.scotiabank.controller;
 
 import com.examen.entrevista.scotiabank.model.Alumno;
-import com.examen.entrevista.scotiabank.model.Estado;
 import com.examen.entrevista.scotiabank.service.AlumnoService;
-import com.examen.entrevista.scotiabank.service.AlumnoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 

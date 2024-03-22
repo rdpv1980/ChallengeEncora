@@ -3,21 +3,13 @@ package com.examen.entrevista.scotiabank.controller;
 import com.examen.entrevista.scotiabank.Util;
 import com.examen.entrevista.scotiabank.model.Alumno;
 import com.examen.entrevista.scotiabank.service.AlumnoService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
-@Validated
 @RequestMapping("/alumnos")
 public class AlumnoController {
     private final AlumnoService alumnoService;
@@ -28,7 +20,7 @@ public class AlumnoController {
     }
 
     @PostMapping("/crear")
-    public Mono<ResponseEntity<String>> crearAlumno(@RequestBody @Valid Alumno alumno) {
+    public Mono<ResponseEntity<String>> crearAlumno(@RequestBody /*@Valid*/ Alumno alumno) {
 
         if(Util.validarAlumno(alumno)!=null){
             return Mono.just(ResponseEntity.badRequest().body(Util.validarAlumno(alumno)));
