@@ -14,7 +14,7 @@ public enum Estado {
                 return estado;
             }
         }
-        throw new IllegalArgumentException("El estado debe ser ACTIVO o INACTIVO");
+        throw new IllegalArgumentException();
     }
 
    @JsonValue

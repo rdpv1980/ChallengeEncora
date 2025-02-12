@@ -38,4 +38,29 @@ public class AlumnoController {
         return alumnoService.obtenerAlumnosActivos();
     }
 
+    @GetMapping
+    public Flux<AlumnoDTO> obtenerTodos() {
+        return alumnoService.obtenerTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<AlumnoDTO>> obtenerPorId(@PathVariable Long id) {
+        return alumnoService.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<AlumnoDTO>> actualizarAlumno(@PathVariable Long id, @Valid @RequestBody AlumnoDTO alumnoDTO) {
+        return alumnoService.actualizar(id, alumnoDTO)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> eliminarAlumno(@PathVariable Long id) {
+        return alumnoService.eliminar(id)
+                .then(Mono.just(ResponseEntity.<Void>noContent().build()));
+    }
+
 }

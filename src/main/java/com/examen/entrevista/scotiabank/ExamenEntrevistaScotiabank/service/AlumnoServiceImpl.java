@@ -1,9 +1,9 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service;
 
-import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.advice.AlumnoYaExisteException;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Alumno;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Estado;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.dto.AlumnoDTO;
-import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository.AlumnoRepositoryImpl;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,32 +13,27 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AlumnoServiceImpl implements AlumnoService{
-    private final AlumnoRepositoryImpl alumnoRepositoryImpl;
+    private final AlumnoRepository alumnoRepository;
 
     @Autowired
-    public AlumnoServiceImpl(AlumnoRepositoryImpl alumnoRepositoryImpl) {
-        this.alumnoRepositoryImpl = alumnoRepositoryImpl;
+    public AlumnoServiceImpl(AlumnoRepository alumnoRepository) {
+        this.alumnoRepository = alumnoRepository;
     }
 
     @Override
     public Mono<ResponseEntity<Void>> crearAlumno(AlumnoDTO alumnoDTO) {
 
-        Alumno alumno = new Alumno(alumnoDTO.id(), alumnoDTO.nombre(), alumnoDTO.apellido(),
+        Alumno alumno = new Alumno(null, alumnoDTO.nombre(), alumnoDTO.apellido(),
                                   alumnoDTO.estado(), alumnoDTO.edad());
-        return alumnoRepositoryImpl.existeId(alumno.getId())
-                .flatMap(existe -> {
-                    if (existe) {
-                        return Mono.error(new AlumnoYaExisteException("El ID del alumno ya existe"));
-                    } else {
-                        return alumnoRepositoryImpl.guardar(alumno)
-                                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()));
-                    }
-                });
+
+        return alumnoRepository.guardar(alumno)
+                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()));
     }
 
     @Override
     public Flux<AlumnoDTO> obtenerAlumnosActivos() {
-        return alumnoRepositoryImpl.obtenerAlumnosActivos()
+        return alumnoRepository.obtenerAlumnosActivos()
+                .filter(alumno -> alumno.getEstado()== Estado.ACTIVO)
                 .map(alumno -> new AlumnoDTO(
                         alumno.getId(),
                         alumno.getNombre(),
@@ -46,5 +41,53 @@ public class AlumnoServiceImpl implements AlumnoService{
                         alumno.getEstado(),
                         alumno.getEdad()
                 ));
+    }
+
+    @Override
+    public Flux<AlumnoDTO> obtenerTodos() {
+        return alumnoRepository.obtenerTodos()
+                .map(alumno -> new AlumnoDTO(
+                        alumno.getId(),
+                        alumno.getNombre(),
+                        alumno.getApellido(),
+                        alumno.getEstado(),
+                        alumno.getEdad()
+                ));
+    }
+
+    @Override
+    public Mono<AlumnoDTO> obtenerPorId(Long id) {
+        return alumnoRepository.obtenerPorId(id)
+                .map(alumno -> new AlumnoDTO(
+                        alumno.getId(),
+                        alumno.getNombre(),
+                        alumno.getApellido(),
+                        alumno.getEstado(),
+                        alumno.getEdad()
+                ));
+    }
+
+    @Override
+    public Mono<AlumnoDTO> actualizar(Long id, AlumnoDTO alumnoDTO) {
+        return alumnoRepository.obtenerPorId(id)
+                .flatMap(alumnoExistente -> {
+                    alumnoExistente.setNombre(alumnoDTO.nombre());
+                    alumnoExistente.setApellido(alumnoDTO.apellido());
+                    alumnoExistente.setEstado(alumnoDTO.estado());
+                    alumnoExistente.setEdad(alumnoDTO.edad());
+                    return alumnoRepository.actualizar(alumnoExistente);
+                })
+                .map(alumnoActualizado -> new AlumnoDTO(
+                        alumnoActualizado.getId(),
+                        alumnoActualizado.getNombre(),
+                        alumnoActualizado.getApellido(),
+                        alumnoActualizado.getEstado(),
+                        alumnoActualizado.getEdad()
+                ));
+    }
+
+    @Override
+    public Mono<Void> eliminar(Long id) {
+        return alumnoRepository.eliminar(id);
     }
 }

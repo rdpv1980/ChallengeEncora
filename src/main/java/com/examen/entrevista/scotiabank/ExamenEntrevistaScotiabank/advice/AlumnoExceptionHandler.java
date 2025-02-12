@@ -36,16 +36,6 @@ public class AlumnoExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleInvalidEnum(IllegalArgumentException ex) {
-        //return Map.of("error", ex.getMessage());
         return Map.of("error", messageService.getEstadoInvalidoMessage());
     }
-
-    @ExceptionHandler(AlumnoYaExisteException.class)
-    @ResponseStatus(HttpStatus.CONFLICT) // 409 Conflict
-    public Map<String, String> handleAlumnoYaExisteException(AlumnoYaExisteException ex) {
-        //return Map.of("error", ex.getMessage());
-        return Map.of("error", messageService.getAlumnoIdDuplicadoMessage());
-    }
-
-
 }

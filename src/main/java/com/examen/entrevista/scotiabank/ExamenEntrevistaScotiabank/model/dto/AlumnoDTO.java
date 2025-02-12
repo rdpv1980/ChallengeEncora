@@ -4,7 +4,7 @@ import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Estado;
 import jakarta.validation.constraints.*;
 
 public record AlumnoDTO(
-        @NotNull @Positive Long id,
+        Long id,
         @NotBlank String nombre,
         @NotBlank String apellido,
         @NotNull

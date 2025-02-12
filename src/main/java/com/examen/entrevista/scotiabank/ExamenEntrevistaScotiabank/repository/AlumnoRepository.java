@@ -11,4 +11,8 @@ public interface AlumnoRepository{
     Mono<Boolean> existeId(Long id);
     Mono<Alumno> guardar(Alumno alumno);
     Flux<Alumno> obtenerAlumnosActivos();
+    Flux<Alumno> obtenerTodos();
+    Mono<Alumno> obtenerPorId(Long id);
+    public Mono<Void> eliminar(Long id);
+    public Mono<Alumno> actualizar(Alumno alumno);
 }
