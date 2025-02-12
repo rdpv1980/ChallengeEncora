@@ -1,4 +1,4 @@
-package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.advice;
+package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.exception;
 
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service.MessageService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

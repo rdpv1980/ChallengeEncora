@@ -1,7 +1,6 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service;
 
 
-import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Alumno;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.dto.AlumnoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

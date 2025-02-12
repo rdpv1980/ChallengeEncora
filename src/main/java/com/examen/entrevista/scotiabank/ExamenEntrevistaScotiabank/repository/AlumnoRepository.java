@@ -1,14 +1,12 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository;
 
 
-import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Alumno;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Alumno;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface AlumnoRepository{
-    Mono<Boolean> existeId(Long id);
-    Mono<Alumno> guardar(Alumno alumno);
-    Flux<Alumno> obtenerAlumnosActivos();
+public interface AlumnoRepository extends ReactiveCrudRepository<Alumno, Long> {
 }

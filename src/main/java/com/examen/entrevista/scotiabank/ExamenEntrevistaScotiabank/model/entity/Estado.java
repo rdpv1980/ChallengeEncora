@@ -1,4 +1,4 @@
-package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model;
+package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
