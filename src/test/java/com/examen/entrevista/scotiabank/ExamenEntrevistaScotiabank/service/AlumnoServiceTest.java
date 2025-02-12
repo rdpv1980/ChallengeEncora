@@ -1,7 +1,11 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service;
 
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Alumno;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.Estado;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.dto.AlumnoDTO;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository.AlumnoRepository;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository.AlumnoRepositoryImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,70 +17,85 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AlumnoServiceTest {
-    @Mock
-    private AlumnoRepositoryImpl alumnoRepositoryImpl;
-
     @InjectMocks
     private AlumnoServiceImpl alumnoService;
 
+    @Mock
+    private AlumnoRepositoryImpl alumnoRepository;
+
+    private Alumno alumno;
+    private AlumnoDTO alumnoDTO;
+    private List<Alumno> alumnos;
+
+    @BeforeEach
+    void setUp() {
+        alumno = new Alumno(1L, "Ronald", "Fernandez", Estado.ACTIVO, 18);
+        Alumno alumno2 = new Alumno(2L, "Carlos", "González", Estado.INACTIVO, 22);
+        alumnos=List.of(alumno,alumno2);
+
+        alumnoDTO = new AlumnoDTO(null, "Ronald", "Fernandez", Estado.ACTIVO, 18);
+    }
+
     @Test
-    void crearAlumno() {
-   /*     Alumno alumnoDTO = new Alumno(1L, "Robert", "Inga", "activo", 25);
-        //Given
-        when(alumnoRepositoryImpl.existeId(1L)).thenReturn(Mono.just(false));
-        when(alumnoRepositoryImpl.guardar(alumno)).thenReturn(Mono.empty());
+    void obtenerTodos_DeberiaRetornarCantidadCorrectaDeAlumnos() {
 
-        //When
-        Mono<ResponseEntity<Void>> result = alumnoService.crearAlumno(alumnoDTO);
+        when(alumnoRepository.obtenerTodos()).thenReturn(Flux.fromIterable(alumnos)); // 🔥 Simulamos varios alumnos
 
-        //Then
-        StepVerifier.create(result)
-                .expectNextMatches(response -> response.getStatusCode() == HttpStatus.CREATED)
+        StepVerifier.create(alumnoService.obtenerTodos())
+                .expectNextCount(2) // 🔥 Verifica que haya exactamente 2 alumnos
                 .verifyComplete();
 
-        verify(alumnoRepositoryImpl, times(1)).existeId(1);
-        verify(alumnoRepositoryImpl, times(1)).guardar(alumno);*/
+        verify(alumnoRepository).obtenerTodos();
     }
 
-
     @Test
-    void obtenerAlumnosActivos() {
-        //Given
-  /*      Alumno alumno1 = new Alumno("1", "Robert", "Inga", "activo", 25);
-        Alumno alumno2 = new Alumno("2", "Juana", "Salazar", "activo", 28);
-        when(alumnoRepositoryImpl.obtenerAlumnosActivos()).thenReturn(Flux.just(alumno1, alumno2));
+    void obtenerPorId_CuandoExiste_DeberiaRetornarAlumno() {
+        when(alumnoRepository.obtenerPorId(1L)).thenReturn(Mono.just(alumno));
 
-        //When
-        Flux<Alumno> result = alumnoService.obtenerAlumnosActivos();
-
-        //Then
-        StepVerifier.create(result)
-                .expectNext(alumno1)
-                .expectNext(alumno2)
+        StepVerifier.create(alumnoService.obtenerPorId(1L))
+                .expectNextMatches(a -> a.id().equals(1L) && a.nombre().equals("Ronald"))
                 .verifyComplete();
 
-        verify(alumnoRepositoryImpl, times(1)).obtenerAlumnosActivos();*/
+        verify(alumnoRepository).obtenerPorId(1L);
     }
 
     @Test
-    void crearAlumnoDuplicateIdError() {
-   /*     //Given
-        Alumno alumno = new Alumno("1", "Robert", "Inga", "activo", 25);
-        when(alumnoRepositoryImpl.existeId(1)).thenReturn(Mono.just(true));
+    void obtenerPorId_CuandoNoExiste_DeberiaRetornarVacio() {
+        when(alumnoRepository.obtenerPorId(99L)).thenReturn(Mono.empty());
 
-        //When
-        Mono<ResponseEntity<Void>> result = alumnoService.crearAlumno(alumno);
+        StepVerifier.create(alumnoService.obtenerPorId(99L))
+                .verifyComplete();
 
-        //Then
-        StepVerifier.create(result)
-                .expectError(RuntimeException.class)
-                .verify();
-
-        verify(alumnoRepositoryImpl, times(1)).existeId(1);
-        verify(alumnoRepositoryImpl, never()).guardar(alumno);*/
+        verify(alumnoRepository).obtenerPorId(99L);
     }
+
+    @Test
+    void actualizar_CuandoExiste_DeberiaActualizarAlumno() {
+        when(alumnoRepository.obtenerPorId(1L)).thenReturn(Mono.just(alumno));
+        when(alumnoRepository.actualizar(any(Alumno.class))).thenReturn(Mono.just(alumno));
+
+        StepVerifier.create(alumnoService.actualizar(1L, alumnoDTO))
+                .expectNextMatches(a -> a.id().equals(1L) && a.nombre().equals("Ronald"))
+                .verifyComplete();
+
+        verify(alumnoRepository).obtenerPorId(1L);
+        verify(alumnoRepository).actualizar(any(Alumno.class));
+    }
+
+    @Test
+    void eliminar_CuandoExiste_DeberiaEliminarAlumno() {
+        when(alumnoRepository.eliminar(1L)).thenReturn(Mono.empty());
+
+        StepVerifier.create(alumnoService.eliminar(1L))
+                .verifyComplete();
+
+        verify(alumnoRepository).eliminar(1L);
+    }
+
 }
