@@ -2,26 +2,31 @@ package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
 
-@Entity
-@Table(name = "alumnos")
+@Table("alumno") // Indica que esta clase representa la tabla 'alumno'
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Alumno {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column("id") // Mapea la columna 'id' de la tabla
     private Long id;
 
+    @Column("nombre")
     private String nombre;
+
+    @Column("apellido")
     private String apellido;
 
-    @Enumerated(EnumType.STRING)
+    @Column("estado")
     private Estado estado;
 
+    @Column("edad")
     private int edad;
 }
-

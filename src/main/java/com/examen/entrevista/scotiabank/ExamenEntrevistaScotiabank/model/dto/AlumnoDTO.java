@@ -4,14 +4,11 @@ import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.
 import jakarta.validation.constraints.*;
 
 public record AlumnoDTO(
-        @NotNull @Positive Long id,
+        Long id,
         @NotBlank String nombre,
         @NotBlank String apellido,
-        @NotNull
-        Estado estado,
-        @Min(value = 12, message = "La edad mínima permitida es 12 años")
-        @Max(value = 100, message = "La edad máxima permitida es 100 años")
-        int edad
+        @NotNull Estado estado,
+        @Min(12) @Max(100) int edad
 ) {
 
 }

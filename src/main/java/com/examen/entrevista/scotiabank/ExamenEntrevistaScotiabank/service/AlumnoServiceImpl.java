@@ -1,5 +1,6 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service;
 
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.exception.AlumnoYaExisteException;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.dto.AlumnoDTO;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Alumno;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Estado;
@@ -23,21 +24,13 @@ public class AlumnoServiceImpl implements AlumnoService{
     @Override
     public Mono<ResponseEntity<Void>> crearAlumno(AlumnoDTO alumnoDTO) {
 
-//        Alumno alumno = new Alumno(alumnoDTO.id(), alumnoDTO.nombre(), alumnoDTO.apellido(),
-//                                  alumnoDTO.estado(), alumnoDTO.edad());
-//        return alumnoRepositoryImpl.existeId(alumno.getId())
-//                .flatMap(existe -> {
-//                    if (existe) {
-//                        return Mono.error(new AlumnoYaExisteException("El ID del alumno ya existe"));
-//                    } else {
-//                        return alumnoRepositoryImpl.guardar(alumno)
-//                                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()));
-//                    }
-//                });
 
         Alumno alumno = new Alumno(null, alumnoDTO.nombre(), alumnoDTO.apellido(), alumnoDTO.estado(), alumnoDTO.edad());
-        return alumnoRepository.save(alumno)
-                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()));
+        return alumnoRepository.findById(alumnoDTO.id()) // Busca si el ID ya existe
+                .flatMap(existente -> Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).<Void>build())) // Si existe, retorna 400
+                .switchIfEmpty(alumnoRepository.save(alumno)
+                        .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).<Void>build()))
+                );
     }
 
     @Override

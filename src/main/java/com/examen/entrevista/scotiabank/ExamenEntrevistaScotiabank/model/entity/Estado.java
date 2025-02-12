@@ -1,6 +1,7 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Estado {
@@ -9,12 +10,16 @@ public enum Estado {
 
     @JsonCreator
     public static Estado fromString(String value) {
+        System.out.println("Valor recibido en fromString(): [" + value + "]"); // 🔍 Debug
+
         for (Estado estado : Estado.values()) {
-            if (estado.name().equalsIgnoreCase(value)) {
+            System.out.println("Comparando con: [" + estado.name() + "]"); // 🔍 Debug
+            if (estado.name().equalsIgnoreCase(value.trim())) { // 🔥 Agregamos trim()
                 return estado;
             }
         }
-        throw new IllegalArgumentException("El estado debe ser ACTIVO o INACTIVO");
+
+        throw new IllegalArgumentException();
     }
 
    @JsonValue
