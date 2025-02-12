@@ -1,7 +1,7 @@
 package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service;
 
-import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Alumno;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.dto.AlumnoDTO;
+import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Alumno;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.model.entity.Estado;
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.repository.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class AlumnoServiceImpl implements AlumnoService{
     @Override
     public Flux<AlumnoDTO> obtenerAlumnosActivos() {
         return alumnoRepository.findAll()
-                .filter(alumno -> alumno.getEstado()== Estado.ACTIVO)
+                .filter(alumno -> Estado.ACTIVO.equals(alumno.getEstado()))
                 .map(alumno -> new AlumnoDTO(
                         alumno.getId(),
                         alumno.getNombre(),
