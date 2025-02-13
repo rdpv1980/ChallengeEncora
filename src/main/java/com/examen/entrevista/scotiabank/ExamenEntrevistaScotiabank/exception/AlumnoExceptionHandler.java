@@ -1,4 +1,4 @@
-package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.advice;
+package com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.exception;
 
 import com.examen.entrevista.scotiabank.ExamenEntrevistaScotiabank.service.MessageService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -36,6 +36,6 @@ public class AlumnoExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleInvalidEnum(IllegalArgumentException ex) {
-        return Map.of("error", messageService.getEstadoInvalidoMessage());
+        return Map.of("error", messageService.getEstadoInvalido());
     }
 }

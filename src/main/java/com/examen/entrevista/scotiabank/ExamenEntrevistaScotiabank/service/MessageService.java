@@ -7,19 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageService {
 
+
+    @Getter
     @Value("${error.estado.invalido}")
     private String estadoInvalido;
-
-    @Value("${error.alumno.id.duplicado}")
-    private String alumnoIdDuplicado;
-
-    public String getEstadoInvalidoMessage() {
-        return estadoInvalido;
-    }
-
-    public String getAlumnoIdDuplicadoMessage() {
-        return alumnoIdDuplicado;
-    }
 
     @Getter
     @Value("${mensaje.alumno.creado}")

@@ -35,7 +35,6 @@ public class AlumnoRepositoryImpl implements AlumnoRepository{
     @Override
    public Flux<Alumno> obtenerAlumnosActivos() {
         return Flux.fromIterable(almacenamiento.values());
-              //  .filter(alumno -> alumno.getEstado()== Estado.ACTIVO);
     }
 
     @Override
