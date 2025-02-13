@@ -15,15 +15,17 @@ public enum Estado {
         for (Estado estado : Estado.values()) {
             System.out.println("Comparando con: [" + estado.name() + "]"); // 🔍 Debug
             if (estado.name().equalsIgnoreCase(value.trim())) { // 🔥 Agregamos trim()
+                System.out.println("llego a este if");
                 return estado;
             }
+            System.out.println("no entro al if");
         }
-
+        System.out.println("salio del for");
         throw new IllegalArgumentException();
     }
 
-   @JsonValue
-    public String toJson() {
-        return name(); // Siempre devuelve ACTIVO o INACTIVO en mayúsculas
-    }
+   //@JsonValue
+   // public String toJson() {
+      //  return name(); // Siempre devuelve ACTIVO o INACTIVO en mayúsculas
+    //}
 }
