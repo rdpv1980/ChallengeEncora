@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Repository
 public interface AlumnoRepository{
     Mono<Boolean> existeId(Long id);
     Mono<Alumno> guardar(Alumno alumno);

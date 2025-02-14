@@ -16,9 +16,4 @@ public enum Estado {
         }
         throw new IllegalArgumentException();
     }
-
-   @JsonValue
-    public String toJson() {
-        return name(); // Siempre devuelve ACTIVO o INACTIVO en mayúsculas
-    }
 }

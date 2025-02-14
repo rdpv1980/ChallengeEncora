@@ -14,16 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 public class AlumnoRepositoryImplTest {
 
-    private AlumnoRepositoryImpl alumnoRepository; // 🔥 No usamos @Mock, probamos el real
+    private AlumnoRepositoryImpl alumnoRepository;
 
     private Alumno alumno1, alumno2;
 
     @BeforeEach
     void setUp() {
-        alumnoRepository = new AlumnoRepositoryImpl(); // 🔥 Instancia real
+        alumnoRepository = new AlumnoRepositoryImpl();
 
-        alumno1 = new Alumno(null, "Ronald", "Fernandez", Estado.ACTIVO, 18);
-        alumno2 = new Alumno(null, "Carlos", "González", Estado.INACTIVO, 22);
+        alumno1 = new Alumno(1L, "Ronald", "Fernandez", Estado.ACTIVO, 18);
+        alumno2 = new Alumno(99L, "Carlos", "González", Estado.INACTIVO, 22);
     }
 
     @Test
@@ -38,17 +38,18 @@ public class AlumnoRepositoryImplTest {
 
     @Test
     void obtenerTodos_DeberiaRetornarTodosLosAlumnos() {
-        alumnoRepository.guardar(alumno1).block();
-        alumnoRepository.guardar(alumno2).block();
+        alumnoRepository.guardar(alumno1);
+        alumnoRepository.guardar(alumno2);
 
-        StepVerifier.create(alumnoRepository.obtenerTodos())
-                .expectNextCount(2) // ✅ Debe retornar exactamente 2 alumnos
+        StepVerifier.create(alumnoRepository.obtenerTodos().collectList()) // 🔥 Convertimos Flux a List
+                .assertNext(alumnos -> assertEquals(2, alumnos.size())) // ✅ Verificamos tamaño exacto
                 .verifyComplete();
     }
     @Test
     void obtenerPorId_CuandoExiste_DeberiaRetornarAlumno() {
-        Alumno guardado = alumnoRepository.guardar(alumno1).block();
+        //block fuerza a que la operación reactiva se ejecute de manera sincrónica y devuelve el resultado inmediatamente.
 
+        Alumno guardado = alumnoRepository.guardar(alumno1).block();
         StepVerifier.create(alumnoRepository.obtenerPorId(guardado.getId()))
                 .assertNext(alumno -> assertEquals("Ronald", alumno.getNombre()))
                 .verifyComplete();
@@ -56,7 +57,7 @@ public class AlumnoRepositoryImplTest {
 
     @Test
     void obtenerPorId_CuandoNoExiste_DeberiaRetornarVacio() {
-        StepVerifier.create(alumnoRepository.obtenerPorId(99L))
+        StepVerifier.create(alumnoRepository.obtenerPorId(3L))
                 .verifyComplete(); // ✅ No debe devolver nada
     }
 

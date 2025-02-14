@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Service
 public interface AlumnoService {
     Mono<ResponseEntity<Void>> crearAlumno(AlumnoDTO alumnoDTO);
     Flux<AlumnoDTO> obtenerAlumnosActivos();

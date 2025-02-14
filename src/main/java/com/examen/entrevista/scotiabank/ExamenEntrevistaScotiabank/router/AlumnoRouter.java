@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 public class AlumnoRouter {
-
+/*
     @Bean
     public RouterFunction<ServerResponse> alumnoRoutes(AlumnoService alumnoService, MessageService messageService,
                                                         AlumnoValidator alumnoValidator) {
@@ -68,4 +68,6 @@ public class AlumnoRouter {
                 )
                 .build();
     }
+
+ */
 }

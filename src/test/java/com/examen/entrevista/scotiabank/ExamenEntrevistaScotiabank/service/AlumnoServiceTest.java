@@ -45,9 +45,14 @@ public class AlumnoServiceTest {
     @Test
     void obtenerTodos_DeberiaRetornarCantidadCorrectaDeAlumnos() {
 
+        // GIVEN - Simulamos que el repositorio devuelve una lista de alumnos
         when(alumnoRepository.obtenerTodos()).thenReturn(Flux.fromIterable(alumnos)); // 🔥 Simulamos varios alumnos
 
-        StepVerifier.create(alumnoService.obtenerTodos())
+        // WHEN - Se ejecuta el método a probar
+        var resultado = alumnoService.obtenerTodos();
+
+        // THEN - Verificamos que se devuelven exactamente 2 alumnos
+        StepVerifier.create(resultado)
                 .expectNextCount(2) // 🔥 Verifica que haya exactamente 2 alumnos
                 .verifyComplete();
 
@@ -56,9 +61,14 @@ public class AlumnoServiceTest {
 
     @Test
     void obtenerPorId_CuandoExiste_DeberiaRetornarAlumno() {
+        // GIVEN - Se configura el mock para retornar un alumno cuando se busca por ID
         when(alumnoRepository.obtenerPorId(1L)).thenReturn(Mono.just(alumno));
 
-        StepVerifier.create(alumnoService.obtenerPorId(1L))
+        // WHEN - Se ejecuta el método a probar
+        var resultado = alumnoService.obtenerPorId(1L);
+
+        // THEN - Se verifica que el resultado sea el esperado
+        StepVerifier.create(resultado)
                 .expectNextMatches(a -> a.id().equals(1L) && a.nombre().equals("Ronald"))
                 .verifyComplete();
 
@@ -67,9 +77,14 @@ public class AlumnoServiceTest {
 
     @Test
     void obtenerPorId_CuandoNoExiste_DeberiaRetornarVacio() {
+        // GIVEN - Se configura el mock para retornar un Mono vacío cuando el ID no existe
         when(alumnoRepository.obtenerPorId(99L)).thenReturn(Mono.empty());
 
-        StepVerifier.create(alumnoService.obtenerPorId(99L))
+        // WHEN - Se ejecuta el método a probar
+        var resultado = alumnoService.obtenerPorId(99L);
+
+        // THEN - Se verifica que el resultado sea vacío
+        StepVerifier.create(resultado)
                 .verifyComplete();
 
         verify(alumnoRepository).obtenerPorId(99L);
@@ -77,10 +92,15 @@ public class AlumnoServiceTest {
 
     @Test
     void actualizar_CuandoExiste_DeberiaActualizarAlumno() {
+        // GIVEN - Se configura el mock para retornar el alumno existente y la actualización
         when(alumnoRepository.obtenerPorId(1L)).thenReturn(Mono.just(alumno));
         when(alumnoRepository.actualizar(any(Alumno.class))).thenReturn(Mono.just(alumno));
 
-        StepVerifier.create(alumnoService.actualizar(1L, alumnoDTO))
+        // WHEN - Se ejecuta el método a probar
+        var resultado = alumnoService.actualizar(1L, alumnoDTO);
+
+        // THEN - Se verifica el resultado y las interacciones con el mock
+        StepVerifier.create(resultado)
                 .expectNextMatches(a -> a.id().equals(1L) && a.nombre().equals("Ronald"))
                 .verifyComplete();
 
@@ -90,9 +110,14 @@ public class AlumnoServiceTest {
 
     @Test
     void eliminar_CuandoExiste_DeberiaEliminarAlumno() {
+        // GIVEN - Se configura el mock para simular la eliminación exitosa
         when(alumnoRepository.eliminar(1L)).thenReturn(Mono.empty());
 
-        StepVerifier.create(alumnoService.eliminar(1L))
+        // WHEN - Se ejecuta el método a probar
+        var resultado = alumnoService.eliminar(1L);
+
+        // THEN - Se verifica que el resultado sea el esperado y que el método se haya llamado
+        StepVerifier.create(resultado)
                 .verifyComplete();
 
         verify(alumnoRepository).eliminar(1L);
