@@ -14,5 +14,10 @@ public record AlumnoDTO(
         int edad
 
 ) {
-
+        public AlumnoDTO {
+                if (nombre != null&& apellido!=null) {
+                        nombre = nombre.trim();
+                        apellido = apellido.trim();
+                }
+        }
 }
